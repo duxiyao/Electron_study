@@ -1,0 +1,9 @@
+vue create my-electron-vue-app
+npm install -g @vue/cli
+vue create my-electron-vue-app
+cd my-electron-vue-app
+npm install electron --save-dev
+npm run electron:serve
+vue-cli-service serve
+npm run serve
+doskey /history > cmdhis
