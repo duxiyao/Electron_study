@@ -12,7 +12,10 @@
     "electron:build": "vue-cli-service build && electron-builder"
   },
   "dependencies": {
+    "@nut-tree/nut-js": "^4.2.0",
     "core-js": "^3.8.3",
+    "electron-store": "^10.0.1",
+    "socket.io-client": "^4.8.1",
     "vue": "^3.2.13"
   },
   "devDependencies": {
@@ -38,7 +41,9 @@
     "parserOptions": {
       "parser": "@babel/eslint-parser"
     },
-    "rules": {}
+    "rules": {
+		"no-unused-vars": "warn"
+	}
   },
   "browserslist": [
     "> 1%",
@@ -56,6 +61,18 @@
       "dist/**/*",
       "electron/**/*"
     ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "dist/logo.png"
+    },
+    "mac": {
+      "icon": "dist_electron/icons/app.icns"
+    },
+    "linux": {
+      "icon": "dist_electron/icons/app.png"
+    },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
