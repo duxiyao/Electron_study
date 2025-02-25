@@ -87,7 +87,8 @@ function createWindow() {
         store.set('user', JSON.parse(user));
         console.log(`user=${user}`);
         createSocketClient();
-        popupWindow.close();
+        //popupWindow.close();
+		 popupWindow.webContents.send('refresh-data','123');
         return true;
     });
     ipcMain.handle('clear-user', async(event, name) => {
@@ -113,7 +114,7 @@ function createPopup() {
                 preload: path.join(__dirname, 'preload.js'),
                 contextIsolation: true,
                 enableRemoteModule: false,
-                nodeIntegration: false
+                nodeIntegration: true
             }
         });
 

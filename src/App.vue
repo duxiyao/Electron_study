@@ -31,6 +31,17 @@ const user = ref({ name: '',isControlled:false });
 const newName = ref('');
 const isControlled = ref(false);
 
+window.electronAPI.onRefreshData((event, data) => {
+  console.log('收到刷新数据的通知:', data);
+  refreshData(data);
+});
+
+// 刷新数据的函数
+function refreshData() {
+  console.log('刷新页面数据...');
+  // 在这里实现刷新数据的逻辑
+}
+
 // 获取用户数据
 onMounted(async () => {
 	try {
