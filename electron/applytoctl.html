@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>申请成为控制者</title>
+</head>
+<body>
+    <h1><label id='who'></label>申请成为控制者</h1>
+	<button id="btn_agree">同意</button> 
+	<button id="btn_no">拒绝</button> 
+</body>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const url = new URL(window.location.href);
+
+    // 获取参数
+    const name = url.searchParams.get('un');
+	document.getElementById('who').textContent = name;
+
+    document.getElementById('btn_agree').addEventListener('click', () => {
+		window.electronAPI.agreeTobeController();
+    });
+    document.getElementById('btn_no').addEventListener('click', () => {
+		window.electronAPI.rejectController();
+    });
+});
+</script>
+</html>

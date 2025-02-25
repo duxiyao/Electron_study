@@ -1,8 +1,11 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
-    onRefreshData: (callback) => ipcRenderer.on('refresh-data', callback),
+    onRefreshControlled: (callback) => ipcRenderer.on('refresh-controlled', callback),
     getUser: () => ipcRenderer.invoke('get-user'),
+    applyController: () => ipcRenderer.invoke('apply-controller'),
+    agreeTobeController: () => ipcRenderer.invoke('agree-controller'),
+    rejectController: () => ipcRenderer.invoke('reject-controller'),
     saveUser: (user) => ipcRenderer.invoke('save-user',user),
     clearUser: () => ipcRenderer.invoke('clear-user'),
     send: (channel, data) => {

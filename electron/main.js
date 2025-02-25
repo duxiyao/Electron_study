@@ -23,7 +23,7 @@ async function initializeStore() {
 initializeStore().then(() => {
     // 现在您可以使用 store 了
     console.log(store.get('user'));
-    store.clear()
+    //store.clear()
     createWindow()
 });
 
@@ -88,7 +88,6 @@ function createWindow() {
         console.log(`user=${user}`);
         createSocketClient();
         //popupWindow.close();
-		 popupWindow.webContents.send('refresh-data','123');
         return true;
     });
     ipcMain.handle('clear-user', async(event, name) => {
@@ -98,6 +97,9 @@ function createWindow() {
 
     if (!store.get('user') || !store.get('user').name)
         createPopup()
+	
+    createApplyTobeControllerPopup('123')
+
 }
 
 let popupWindow;
@@ -106,7 +108,6 @@ function createPopup() {
         popupWindow = new BrowserWindow({
             width: 1400,
             height: 1300,
-            frame: false, // 隐藏标题栏和边框
             resizable: false, // 禁止调整窗口大小
             parent: mainWindow, // 设置父窗口
             modal: true, // 设置为模态窗口
@@ -117,7 +118,7 @@ function createPopup() {
                 nodeIntegration: true
             }
         });
-
+		popupWindow.setMenuBarVisibility(false)
         //popupWindow.loadFile(path.join(__dirname, 'popup.html'));
         popupWindow.loadFile(path.join(__dirname, '../dist/index.html'));
 
@@ -221,11 +222,81 @@ app.on('activate', () => {
     }
 });
 
+/////////////applyTobeController
+let applyTobeControllerWindow;
+function createApplyTobeControllerPopup(userName) {
+    if (!applyTobeControllerWindow) {
+        applyTobeControllerWindow = new BrowserWindow({
+            width: 400,
+            height: 300,
+            parent: mainWindow, // 设置父窗口
+            modal: true, // 设置为模态窗口
+            webPreferences: {
+                preload: path.join(__dirname, 'preload.js'),
+                contextIsolation: true,
+                enableRemoteModule: false,
+                nodeIntegration: true
+            }
+        });
+		applyTobeControllerWindow.setMenuBarVisibility(false)
+        applyTobeControllerWindow.loadFile(path.join(__dirname, 'applytoctl.html'), {
+			query: { un: userName }, // 添加查询参数
+		});
+        
+        applyTobeControllerWindow.on('closed', () => {
+            applyTobeControllerWindow = null;
+        });
+        //applyTobeControllerWindow.webContents.openDevTools();
+    }
+}
+
+
+///////////////// controll panel
+let controllPanelWindow;
+function createApplyTobeControllerPopup(userName) {
+    if (!controllPanelWindow) {
+        controllPanelWindow = new BrowserWindow({
+            width: 400,
+            height: 300,
+            parent: mainWindow, // 设置父窗口
+            modal: true, // 设置为模态窗口
+            webPreferences: {
+                preload: path.join(__dirname, 'preload.js'),
+                contextIsolation: true,
+                enableRemoteModule: false,
+                nodeIntegration: true
+            }
+        });
+		controllPanelWindow.setMenuBarVisibility(false)
+        controllPanelWindow.loadFile(path.join(__dirname, 'applytoctl.html'), {
+			query: { un: userName }, // 添加查询参数
+		});
+        
+        controllPanelWindow.on('closed', () => {
+            controllPanelWindow = null;
+        });
+        //controllPanelWindow.webContents.openDevTools();
+    }
+}
 ////////////////socket client
 
 let ctlUn = ''
+let targetApplyCtler = ''
 
-function createSocketClient() {
+function createSocketClient() {	
+    ipcMain.handle('apply-controller', async() => {
+		socket.emit('applyTobeController', ctlUn);
+        return true;
+    });
+    ipcMain.handle('agree-controller', async() => {
+		socket.emit('agreeTobeController', targetApplyCtler);
+        return true;
+    });
+    ipcMain.handle('reject-controller', async() => {
+		socket.emit('rejectController', targetApplyCtler);
+        return true;
+    });
+	
     let user = store.get('user');
     let socket = io('http://localhost:3000', {
         query: {
@@ -242,6 +313,7 @@ function createSocketClient() {
         if (user.name != userName) {
             //记录控制端
             ctlUn = userName
+			popupWindow.webContents.send('refresh-controlled',userName);
         }
         console.log(`registerAsControlled ctlUn=${ctlUn} `);
     });
@@ -249,12 +321,19 @@ function createSocketClient() {
         console.log(`on registerAsControlled  ${uname} `);
         if (uname === ctlUn) {
             ctlUn = ''
+			popupWindow.webContents.send('refresh-controlled','');
         }
         console.log(`unRegisterControlled ctlUn=${ctlUn} `);
 
+    }); 
+    socket.on('applyTobeController', (targetUserName) => {
+		createApplyTobeControllerPopup(targetUserName)
+		targetApplyCtler = targetUserName
     });
-
-    //socket.emit('applyTobeController', un);
+    socket.on('agreeTobeController', (targetUserName) => {
+    });
+    socket.on('rejectController', (targetUserName) => {
+    });
 
     // 发送指令到服务端
     /*

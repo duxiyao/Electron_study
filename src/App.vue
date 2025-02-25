@@ -21,6 +21,7 @@
         <button @click="saveName">保存</button>
       </div>
     </div>
+	<div v-if="ctledName"><button @click="applyController">申请控制</button> {{ ctledName }}</div>
   </div>
 </template>
 
@@ -30,17 +31,11 @@ import { ref, onMounted } from 'vue';
 const user = ref({ name: '',isControlled:false });
 const newName = ref('');
 const isControlled = ref(false);
+const ctledName = ref('');
 
-window.electronAPI.onRefreshData((event, data) => {
-  console.log('收到刷新数据的通知:', data);
-  refreshData(data);
+window.electronAPI.onRefreshControlled((event, data) => {
+	ctledName.value=data
 });
-
-// 刷新数据的函数
-function refreshData() {
-  console.log('刷新页面数据...');
-  // 在这里实现刷新数据的逻辑
-}
 
 // 获取用户数据
 onMounted(async () => {
@@ -74,6 +69,9 @@ const saveName = async() => {
     console.log('isControlled=' + isControlled.value)
     //window.electronAPI.send('close-window', 1); // 假设窗口 ID 为 1
 
+};
+const applyController = async() => {
+	await window.electronAPI.applyController();
 };
 </script>
 
