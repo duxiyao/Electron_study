@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>申请成为控制者</title>
+	<style>
+		html, body {
+				margin: 0;
+				padding: 0;
+				height: 100%;
+		}
+		iframe {
+			width: 100%;
+			height: 100vh;
+			border: none;
+			top: 0; left: 0;
+			position: absolute;
+		}
+		/* 覆盖层样式 */
+        .overlay {
+            position: absolute; /* 绝对定位 */
+            top: 0;            /* 从顶部开始 */
+            left: 0;           /* 从左侧开始 */
+            width: 100%;       /* 宽度 100% */
+            height: 100%;      /* 高度 100% */
+            background-color: rgba(0, 0, 0, 0); /* 半透明黑色背景 */
+            z-index: 10;       /* 确保覆盖层在 iframe 上方 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: red;
+            font-size: 24px;
+        }
+	</style>
+</head>
+<body>
+	<iframe src="https://pmgx.jiujinbangong.com/" ></iframe>
+	 <!-- 覆盖层 -->
+    <div class="overlay">
+		<div id="coords">X: 0, Y: 0</div>
+    </div>
+</body>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+	let clickCount = 0;
+	let timer;
+
+    document.addEventListener('mousemove', (event) => {
+		const coords = document.getElementById('coords');
+		coords.textContent = `X: ${event.clientX}, Y: ${event.clientY}`;
+    });
+	
+	document.addEventListener('click', function(event) {
+		clickCount++;
+		if (clickCount === 1) {
+			// 第一次单击，启动计时器
+			timer = setTimeout(function() {
+				console.log('单击事件触发！', event);
+				clickCount = 0; // 重置计数器
+			}, 300); // 300ms 内没有第二次点击则认为是单击
+		}
+	});
+	document.addEventListener('dblclick', function(event) {
+		clearTimeout(timer); // 清除计时器，避免单击事件触发
+		 clickCount = 0; // 重置计数器
+		console.log('双击事件触发！', event);
+	});
+	
+	document.addEventListener('contextmenu', function(event) {
+		event.preventDefault(); // 阻止默认上下文菜单
+		console.log('右键点击事件触发！', event);
+	});
+	
+	document.addEventListener('keydown', function(event) {
+		//console.log('按键按下：', event.key);
+		 if (!event.repeat) {
+			console.log('按键按下：', event.key);
+		}
+	});
+	document.addEventListener('keyup', function(event) {
+		console.log('按键释放：', event.key);
+	});
+	
+	/*
+	document.addEventListener('keydown', function(event) {
+		if (event.key === 'Enter') {
+			console.log('Enter 键被按下！');
+		} else if (event.key === 'Escape') {
+			console.log('Escape 键被按下！');
+		}
+	});
+	
+	document.addEventListener('keydown', function(event) {
+		if (event.ctrlKey && event.key === 's') {
+			event.preventDefault(); // 阻止默认保存行为
+			console.log('Ctrl + S 被按下！');
+		}
+	});*/
+
+    const url = new URL(window.location.href);
+
+    // 获取参数
+    const name = url.searchParams.get('un');
+	
+});
+</script>
+</html>
