@@ -7,6 +7,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     agreeTobeController: () => ipcRenderer.invoke('agree-controller'),
     rejectController: () => ipcRenderer.invoke('reject-controller'),
     saveUser: (user) => ipcRenderer.invoke('save-user',user),
+    sendCtlCmd: (cmd) => ipcRenderer.invoke('send-ctl-cmd',cmd),
     clearUser: () => ipcRenderer.invoke('clear-user'),
     send: (channel, data) => {
         ipcRenderer.send(channel, data);

@@ -39,6 +39,10 @@ io.on('connection', (socket) => {
     socket.on('rejectController', (targetUserName) => {
         users.get(targetUserName).emit('rejectController', userName);
     });
+    socket.on('execcmd', (p) => {
+		var ps=p.split(',')
+        users.get(ps[0]).emit('execcmd', ps[1]);
+    });
 
     // 清理断开连接的客户端
     socket.on('disconnect', () => {

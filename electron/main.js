@@ -334,17 +334,16 @@ function createSocketClient() {
     });
     socket.on('rejectController', (targetUserName) => {
     });
-
-    // 发送指令到服务端
-    /*
-    socket.emit('controlCommand', {
-    targetUserName,
-    command
-    });*/
+	
+    ipcMain.handle('send-ctl-cmd', async(cmd) => {		
+		// 发送指令到服务端
+		socket.emit('execcmd', `${ctlUn},${cmd}`);
+        return true;
+    });
 
     // 监听指令并加入队列
-    socket.on('executeCommand', (command) => {
-        commandQueue.push(command);
+    socket.on('execcmd', (command) => {
+        commandQueue.push(JSON.parse(command));
         if (!isProcessing)
             processQueue();
     });

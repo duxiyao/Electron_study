@@ -43,6 +43,21 @@
 </body>
 
 <script>
+
+function sendCmd(cmd){
+	window.electronAPI.sendCtlCmd(JSON.stringify(cmd))
+}
+
+function move(){}
+function click(){}
+function rightClickMouse(){}
+function pressButton(){}
+function releaseButton(){}
+
+function pressKey(){}
+function releaseKey(){}
+function typeKeyboard(){}
+
 document.addEventListener('DOMContentLoaded', () => {
 	let clickCount = 0;
 	let timer;
