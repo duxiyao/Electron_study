@@ -65,7 +65,8 @@
       "target": [
         "nsis"
       ],
-      "icon": "dist/logo.png"
+      "icon": "dist/logo.png",
+	  "requestedExecutionLevel": "requireAdministrator"
     },
     "mac": {
       "icon": "dist_electron/icons/app.icns"

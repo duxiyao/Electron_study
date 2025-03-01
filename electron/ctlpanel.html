@@ -46,18 +46,18 @@
 const frameInterval = 1000 / 30; // 每帧的时间间隔（约 33.33ms）
 let lastSendTime = 0;
 
-function sendCmd(cmd){
-	const now = Date.now();
-    if (now - lastSendTime >= frameInterval) {
+function sendCmd(cmd){	
 		let scmd=JSON.stringify(cmd)
 		//console.log(scmd)
 		window.electronAPI.sendCtlCmd(scmd)
-        lastSendTime = now;
-    }
 }
 
 function move(x,y){
-	sendCmd({type:'move',x:x,y:y})
+	const now = Date.now();
+    if (now - lastSendTime >= frameInterval) {
+		sendCmd({type:'move',x:x,y:y})
+        lastSendTime = now;
+    }
 }
 function click(x,y){
 	sendCmd({type:'click',x:x,y:y})
