@@ -203,10 +203,12 @@ document.addEventListener('DOMContentLoaded', () => {
 		//console.log('按键按下：', event.key);
 		 if (!event.repeat) {
 			console.log('按键按下：', event.key);
+			pressKey(event.key)
 		}
 	});
 	document.addEventListener('keyup', function(event) {
 		console.log('按键释放：', event.key);
+		releaseKey(event.key)
 	});
 	
 	/*

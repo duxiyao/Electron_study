@@ -115,7 +115,7 @@ function createWindow() {
 
     ipcMain.handle('send-ctl-cmd', async(event, cmd) => {		
 		// 发送指令到服务端
-        console.log(`on send-ctl-cmd  ${JSON.stringify(cmd)} `);
+        //console.log(`on send-ctl-cmd  ${JSON.stringify(cmd)} `);
 		socket.emit('execcmd', `${ctlUn},${cmd}`);
         return true;
     });
