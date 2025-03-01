@@ -95,6 +95,22 @@ function createWindow() {
         store.clear()
         return true;
     });
+	
+	
+    ipcMain.handle('apply-controller', async() => {
+		socket.emit('applyTobeController', ctlUn);
+        return true;
+    });
+    ipcMain.handle('agree-controller', async() => {
+		socket.emit('agreeTobeController', targetApplyCtler);
+		applyTobeControllerWindow.close();
+        return true;
+    });
+    ipcMain.handle('reject-controller', async() => {
+		socket.emit('rejectController', targetApplyCtler);
+		applyTobeControllerWindow.close();
+        return true;
+    });
 
    // if (!store.get('user') || !store.get('user').name)
    //     createPopup()
@@ -284,30 +300,14 @@ function createControllPopup(userName) {
 
 let ctlUn = ''
 let targetApplyCtler = ''
+let socket;
 
 function createSocketClient() {	
-	ipcMain.removeAllListeners('apply-controller');
-	ipcMain.removeAllListeners('agree-controller');
-	ipcMain.removeAllListeners('reject-controller');
-    ipcMain.handle('apply-controller', async() => {
-		socket.emit('applyTobeController', ctlUn);
-        return true;
-    });
-    ipcMain.handle('agree-controller', async() => {
-		socket.emit('agreeTobeController', targetApplyCtler);
-		applyTobeControllerWindow.close();
-        return true;
-    });
-    ipcMain.handle('reject-controller', async() => {
-		socket.emit('rejectController', targetApplyCtler);
-		applyTobeControllerWindow.close();
-        return true;
-    });
 	
     let user = store.get('user');
-	let turl='http://localhost:3000'
-	//let turl='http://192.168.2.84:3000'
-    let socket = io(turl, {
+	//let turl='http://localhost:3000'
+	let turl='http://192.168.2.84:3000'
+    socket = io(turl, {
         query: {
             userName: user.name,
             roomName: '000000'
@@ -360,6 +360,9 @@ function createSocketClient() {
     });
 }
 
+
+let commandQueue = [];
+let isProcessing = false;
 // 指令队列处理（确保顺序执行）
 async function processQueue() {
     isProcessing = true;
