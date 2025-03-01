@@ -11,7 +11,8 @@ const path = require('path');
 const {
     mouse,
     keyboard,
-    Point
+    Point,
+	Button 
 } = require('@nut-tree/nut-js');
 let store;
 
@@ -213,6 +214,9 @@ function rightClickMenu() {
                     label: '自定义操作',
                     click: () => {
                         console.log('自定义操作');
+                        console.log('----------------');
+						mouse.pressButton(Button.LEFT);
+						mouse.releaseButton(Button.LEFT);
                     }
                 }
             ]);
@@ -390,12 +394,12 @@ async function executeCommand(cmd) {
             break;
         case 'pressButton':
             await mouse.setPosition(new Point(cmd.x, cmd.y));
-            await mouse.pressButton('left');
+            await mouse.pressButton(Button.LEFT);
             console.log('pressButton');
             break;
         case 'releaseButton':
             await mouse.setPosition(new Point(cmd.x, cmd.y));
-            await mouse.releaseButton('left');
+            await mouse.releaseButton(Button.LEFT);
             console.log('releaseButton');
             break;
         case 'rightClickMouse':
