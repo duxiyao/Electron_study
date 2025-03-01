@@ -76,14 +76,19 @@ function rightClickMouse(x,y){
 	sendCmd({type:'rightClickMouse',x:x,y:y})
 }
 
-function pressKey(){}
-function releaseKey(){}
+function pressKey(key){
+	sendCmd({type:'pressKey',k:key})
+}
+function releaseKey(key){
+	sendCmd({type:'releaseKey',k:key})
+}
 function typeKeyboard(){}
 
 document.addEventListener('DOMContentLoaded', () => {
 	let clickCount = 0;
 	let timer;
 	let isDragging = false;
+	let isPressbutton = false;
 	let startX, startY, startTime;
 
 	document.addEventListener('mousedown', function(event) {
@@ -93,10 +98,10 @@ document.addEventListener('DOMContentLoaded', () => {
 			//console.log('开始拖拽');
 			
 			isDragging = false;
+			isPressbutton = false;
 			startX = event.clientX; // 记录初始位置
 			startY = event.clientY;
 			startTime = Date.now(); // 记录初始时间
-			pressButton(event.clientX,event.clientY)
 		}
 	});
 	
@@ -110,6 +115,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			if (moveX > 5 || moveY > 5) { // 判断是否移动超过阈值
 				isDragging = true;
+				if(!isPressbutton){
+					isPressbutton=true
+					pressButton(event.clientX,event.clientY)
+				}
 			}
 		}
 		//const coords = document.getElementById('coords');
@@ -127,6 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			if (isDragging || timeDiff > 200) { // 拖拽判定条件
 				console.log('拖拽操作');
+				releaseButton(event.clientX,event.clientY)
 			} else {
 			/*
 				clickCount++;
@@ -147,7 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
 			// 重置状态
 			isDragging = false;
 			startX = startY = startTime = undefined;
-			releaseButton(event.clientX,event.clientY)
 		}
 	});
 

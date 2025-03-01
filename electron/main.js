@@ -413,8 +413,11 @@ async function executeCommand(cmd) {
             await mouse.leftClick();
             console.log('dbclick');
             break;
-        case 'type':
-            await keyboard.type(cmd.args.join(' '));
+        case 'pressKey':
+            await keyboard.pressKey(cmd.k);
+            break;
+        case 'releaseKey':
+            await keyboard.releaseKey(cmd.k);
             break;
         default:
             console.log('none cmd:', cmd.type);
