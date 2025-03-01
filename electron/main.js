@@ -382,7 +382,6 @@ async function executeCommand(cmd) {
         switch (cmd.type) {
         case 'move':
             await mouse.setPosition(new Point(cmd.x, cmd.y)); // 使用 Point 对象
-            console.log(`执行: 鼠标移动到 (${x}, ${y})`);
             break;
         case 'click':
             await mouse.setPosition(new Point(cmd.x, cmd.y));
@@ -397,7 +396,7 @@ async function executeCommand(cmd) {
             break;
         case 'type':
             await keyboard.type(cmd.args.join(' '));
-            console.log(`执行: 输入文本 "${cmd.args.join(' ')}"`);
+            console.log(`执行: 输入文本 "${cmd}"`);
             break;
         default:
             console.log('未知指令:', cmd.type);
