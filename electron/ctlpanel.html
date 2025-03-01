@@ -75,8 +75,6 @@ function dbclick(x,y){
 function rightClickMouse(x,y){
 	sendCmd({type:'rightClickMouse',x:x,y:y})
 }
-function pressButton(){}
-function releaseButton(){}
 
 function pressKey(){}
 function releaseKey(){}
@@ -98,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			startX = event.clientX; // 记录初始位置
 			startY = event.clientY;
 			startTime = Date.now(); // 记录初始时间
+			pressButton(event.clientX,event.clientY)
 		}
 	});
 	
@@ -148,6 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			// 重置状态
 			isDragging = false;
 			startX = startY = startTime = undefined;
+			releaseButton(event.clientX,event.clientY)
 		}
 	});
 

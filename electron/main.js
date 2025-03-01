@@ -390,12 +390,12 @@ async function executeCommand(cmd) {
             break;
         case 'pressButton':
             await mouse.setPosition(new Point(cmd.x, cmd.y));
-            await mouse.pressButton();
+            await mouse.pressButton('left');
             console.log('pressButton');
             break;
         case 'releaseButton':
             await mouse.setPosition(new Point(cmd.x, cmd.y));
-            await mouse.releaseButton();
+            await mouse.releaseButton('left');
             console.log('releaseButton');
             break;
         case 'rightClickMouse':
