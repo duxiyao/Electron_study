@@ -38,16 +38,22 @@
 	<iframe src="https://pmgx.jiujinbangong.com/" ></iframe>
 	 <!-- 覆盖层 -->
     <div class="overlay">
-		<div id="coords">X: 0, Y: 0</div>
+		<!-- <div id="coords">X: 0, Y: 0</div>-->
     </div>
 </body>
 
 <script>
+const frameInterval = 1000 / 30; // 每帧的时间间隔（约 33.33ms）
+let lastSendTime = 0;
 
 function sendCmd(cmd){
-	let scmd=JSON.stringify(cmd)
-	//console.log(scmd)
-	window.electronAPI.sendCtlCmd(scmd)
+	const now = Date.now();
+    if (now - lastSendTime >= frameInterval) {
+		let scmd=JSON.stringify(cmd)
+		//console.log(scmd)
+		window.electronAPI.sendCtlCmd(scmd)
+        lastSendTime = now;
+    }
 }
 
 function move(x,y){
@@ -100,8 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
 				isDragging = true;
 			}
 		}
-		const coords = document.getElementById('coords');
-		coords.textContent = `X: ${event.clientX}, Y: ${event.clientY}`;
+		//const coords = document.getElementById('coords');
+		//coords.textContent = `X: ${event.clientX}, Y: ${event.clientY}`;
 		move(event.clientX,event.clientY)
     });
 	

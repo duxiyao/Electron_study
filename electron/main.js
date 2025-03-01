@@ -112,6 +112,12 @@ function createWindow() {
         return true;
     });
 
+    ipcMain.handle('send-ctl-cmd', async(event, cmd) => {		
+		// 发送指令到服务端
+        console.log(`on send-ctl-cmd  ${JSON.stringify(cmd)} `);
+		socket.emit('execcmd', `${ctlUn},${cmd}`);
+        return true;
+    });
    // if (!store.get('user') || !store.get('user').name)
    //     createPopup()
 	
@@ -347,12 +353,6 @@ function createSocketClient() {
     socket.on('rejectController', (targetUserName) => {
     });
 	
-    ipcMain.handle('send-ctl-cmd', async(event, cmd) => {		
-		// 发送指令到服务端
-        console.log(`on send-ctl-cmd  ${JSON.stringify(cmd)} `);
-		socket.emit('execcmd', `${ctlUn},${cmd}`);
-        return true;
-    });
 
     // 监听指令并加入队列
     socket.on('execcmd', (command) => {
@@ -386,22 +386,21 @@ async function executeCommand(cmd) {
         case 'click':
             await mouse.setPosition(new Point(cmd.x, cmd.y));
             await mouse.leftClick();
-            console.log('执行: 鼠标左键点击');
+            console.log('click');
             break;
         case 'dbclick':
             await mouse.setPosition(new Point(cmd.x, cmd.y));
             await mouse.leftClick();
             await mouse.leftClick();
-            console.log('执行: 鼠标左键点击');
+            console.log('dbclick');
             break;
         case 'type':
             await keyboard.type(cmd.args.join(' '));
-            console.log(`执行: 输入文本 "${cmd}"`);
             break;
         default:
-            console.log('未知指令:', cmd.type);
+            console.log('none cmd:', cmd.type);
         }
     } catch (error) {
-        console.error('执行失败:', error);
+        console.error('error:', error);
     }
 }
