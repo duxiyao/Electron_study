@@ -57,7 +57,8 @@ function createWindow() {
     console.log(path.join(__dirname, '../dist/index.html'));
     //mainWindow.loadFile(path.join(__dirname, '../dist/index.html')); // 加载打包后的文件
     //mainWindow.webContents.openDevTools(); // 打开开发者工具
-    mainWindow.loadURL('https://pmgx.jiujinbangong.com/');
+    //mainWindow.loadURL('https://pmgx.jiujinbangong.com/');
+    //mainWindow.loadFile(path.join(__dirname, './ctlpanel.html'));
 
     mainWindow.on('closed', () => {
         mainWindow = null;
@@ -98,7 +99,7 @@ function createWindow() {
     if (!store.get('user') || !store.get('user').name)
         createPopup()
 	
-    createApplyTobeControllerPopup('123')
+    //createApplyTobeControllerPopup('123')
 
 }
 
@@ -106,8 +107,8 @@ let popupWindow;
 function createPopup() {
     if (!popupWindow) {
         popupWindow = new BrowserWindow({
-            width: 1400,
-            height: 1300,
+            width: 400,
+            height: 300,
             resizable: false, // 禁止调整窗口大小
             parent: mainWindow, // 设置父窗口
             modal: true, // 设置为模态窗口
@@ -125,7 +126,7 @@ function createPopup() {
         popupWindow.on('closed', () => {
             popupWindow = null;
         });
-        popupWindow.webContents.openDevTools();
+        //popupWindow.webContents.openDevTools();
     }
 }
 
@@ -133,12 +134,13 @@ function createMenu() {
     // 定义菜单模板
     const template = [{
             label: '菜单',
-            submenu: [{
+            submenu: [
+			/*{
                     label: '打开共享屏幕',
                     click: () => {
                         mainWindow.loadURL('https://pmgx.jiujinbangong.com/#/login');
                     }
-                }, {
+                },*/ {
                     label: '设置',
                     click: () => {
                         createPopup()
@@ -253,7 +255,7 @@ function createApplyTobeControllerPopup(userName) {
 
 ///////////////// controll panel
 let controllPanelWindow;
-function createApplyTobeControllerPopup(userName) {
+function createControllPopup(userName) {
     if (!controllPanelWindow) {
         controllPanelWindow = new BrowserWindow({
             width: 400,
@@ -331,6 +333,7 @@ function createSocketClient() {
 		targetApplyCtler = targetUserName
     });
     socket.on('agreeTobeController', (targetUserName) => {
+		createControllPopup(targetUserName)
     });
     socket.on('rejectController', (targetUserName) => {
     });
@@ -364,11 +367,17 @@ async function executeCommand(cmd) {
     try {
         switch (cmd.type) {
         case 'move':
-            const [x, y] = cmd.args[0].split(',').map(Number);
-            await mouse.setPosition(new Point(x, y)); // 使用 Point 对象
+            await mouse.setPosition(new Point(cmd.x, cmd.y)); // 使用 Point 对象
             console.log(`执行: 鼠标移动到 (${x}, ${y})`);
             break;
         case 'click':
+            await mouse.setPosition(new Point(cmd.x, cmd.y));
+            await mouse.leftClick();
+            console.log('执行: 鼠标左键点击');
+            break;
+        case 'dbclick':
+            await mouse.setPosition(new Point(cmd.x, cmd.y));
+            await mouse.leftClick();
             await mouse.leftClick();
             console.log('执行: 鼠标左键点击');
             break;

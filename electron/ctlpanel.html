@@ -45,12 +45,21 @@
 <script>
 
 function sendCmd(cmd){
-	window.electronAPI.sendCtlCmd(JSON.stringify(cmd))
+	//window.electronAPI.sendCtlCmd(JSON.stringify(cmd))
 }
 
-function move(){}
-function click(){}
-function rightClickMouse(){}
+function move(x,y){
+	sendCmd({type:'move',x:x,y:y})
+}
+function click(x,y){
+	sendCmd({type:'click',x:x,y:y})
+}
+function dbclick(x,y){
+	sendCmd({type:'dbclick',x:x,y:y})
+}
+function rightClickMouse(x,y){
+	sendCmd({type:'rightClickMouse',x:x,y:y})
+}
 function pressButton(){}
 function releaseButton(){}
 
@@ -61,18 +70,92 @@ function typeKeyboard(){}
 document.addEventListener('DOMContentLoaded', () => {
 	let clickCount = 0;
 	let timer;
+	let isDragging = false;
+	let startX, startY, startTime;
 
+	document.addEventListener('mousedown', function(event) {
+		if (event.button === 0) { // 检查是否是左键
+		    //isDragging = true;
+			//console.log('鼠标左键按下');
+			//console.log('开始拖拽');
+			
+			isDragging = false;
+			startX = event.clientX; // 记录初始位置
+			startY = event.clientY;
+			startTime = Date.now(); // 记录初始时间
+		}
+	});
+	
     document.addEventListener('mousemove', (event) => {
+		//if (isDragging) {
+			//console.log('拖拽中', event.clientX, event.clientY);
+		//}
+		if (startX !== undefined && startY !== undefined) {
+			const moveX = Math.abs(event.clientX - startX); // 计算移动距离
+			const moveY = Math.abs(event.clientY - startY);
+
+			if (moveX > 5 || moveY > 5) { // 判断是否移动超过阈值
+				isDragging = true;
+			}
+		}
 		const coords = document.getElementById('coords');
 		coords.textContent = `X: ${event.clientX}, Y: ${event.clientY}`;
+		move(event.clientX,event.clientY)
     });
 	
+	document.addEventListener('mouseup', function(event) {
+		if (event.button === 0) { // 检查是否是左键
+			//console.log('鼠标左键松开');
+			//isDragging = false;
+			//console.log('结束拖拽');	
+			const endTime = Date.now();
+			const timeDiff = endTime - startTime; // 计算时间差
+
+			if (isDragging || timeDiff > 200) { // 拖拽判定条件
+				console.log('拖拽操作');
+			} else {
+				clickCount++;
+				setTimeout(() => {
+					if (clickCount === 1) {
+						console.log('单击');
+						click(event.clientX,event.clientY)
+					} else if (clickCount === 2) {
+						console.log('双击');
+						dbclick(event.clientX,event.clientY)
+					}
+					clickCount = 0;
+				}, 250); // 双击时间间隔阈值
+			}
+
+			// 重置状态
+			isDragging = false;
+			startX = startY = startTime = undefined;
+		}
+	});
+
+/*
+	document.addEventListener('click', function(event) {
+		clickCount++;
+		setTimeout(() => {
+			if (clickCount === 1) {
+				console.log('单击');
+			} else if (clickCount === 2) {
+				console.log('双击');
+			}
+			clickCount = 0;
+		}, 250); // 双击时间间隔阈值
+	});*/
+/*
 	document.addEventListener('click', function(event) {
 		clickCount++;
 		if (clickCount === 1) {
 			// 第一次单击，启动计时器
 			timer = setTimeout(function() {
-				console.log('单击事件触发！', event);
+				if(isDragging){				
+				}else{
+					console.log('单击事件触发！', event);
+					click(event.clientX,event.clientY)
+				}
 				clickCount = 0; // 重置计数器
 			}, 300); // 300ms 内没有第二次点击则认为是单击
 		}
@@ -81,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		clearTimeout(timer); // 清除计时器，避免单击事件触发
 		 clickCount = 0; // 重置计数器
 		console.log('双击事件触发！', event);
-	});
+	});*/
 	
 	document.addEventListener('contextmenu', function(event) {
 		event.preventDefault(); // 阻止默认上下文菜单
@@ -113,6 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			console.log('Ctrl + S 被按下！');
 		}
 	});*/
+	
 
     const url = new URL(window.location.href);
 
