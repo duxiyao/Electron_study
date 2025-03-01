@@ -23,7 +23,7 @@ async function initializeStore() {
 initializeStore().then(() => {
     // 现在您可以使用 store 了
     console.log(store.get('user'));
-    //store.clear()
+    store.clear()
     createWindow()
 });
 
@@ -55,7 +55,7 @@ function createWindow() {
     //mainWindow.loadURL('http://localhost:8080'); // Vue 开发服务器地址
 
     console.log(path.join(__dirname, '../dist/index.html'));
-    //mainWindow.loadFile(path.join(__dirname, '../dist/index.html')); // 加载打包后的文件
+    mainWindow.loadFile(path.join(__dirname, '../dist/index.html')); // 加载打包后的文件
     //mainWindow.webContents.openDevTools(); // 打开开发者工具
     //mainWindow.loadURL('https://pmgx.jiujinbangong.com/');
     //mainWindow.loadFile(path.join(__dirname, './ctlpanel.html'));
@@ -96,8 +96,8 @@ function createWindow() {
         return true;
     });
 
-    if (!store.get('user') || !store.get('user').name)
-        createPopup()
+   // if (!store.get('user') || !store.get('user').name)
+   //     createPopup()
 	
     //createApplyTobeControllerPopup('123')
 
@@ -143,7 +143,7 @@ function createMenu() {
                 },*/ {
                     label: '设置',
                     click: () => {
-                        createPopup()
+                        //createPopup()
                     }
                 }, {
                     type: 'separator'
@@ -270,7 +270,7 @@ function createControllPopup(userName) {
             }
         });
 		controllPanelWindow.setMenuBarVisibility(false)
-        controllPanelWindow.loadFile(path.join(__dirname, 'applytoctl.html'), {
+        controllPanelWindow.loadFile(path.join(__dirname, 'ctlpanel.html'), {
 			query: { un: userName }, // 添加查询参数
 		});
         
@@ -286,21 +286,28 @@ let ctlUn = ''
 let targetApplyCtler = ''
 
 function createSocketClient() {	
+	ipcMain.removeAllListeners('apply-controller');
+	ipcMain.removeAllListeners('agree-controller');
+	ipcMain.removeAllListeners('reject-controller');
     ipcMain.handle('apply-controller', async() => {
 		socket.emit('applyTobeController', ctlUn);
         return true;
     });
     ipcMain.handle('agree-controller', async() => {
 		socket.emit('agreeTobeController', targetApplyCtler);
+		applyTobeControllerWindow.close();
         return true;
     });
     ipcMain.handle('reject-controller', async() => {
 		socket.emit('rejectController', targetApplyCtler);
+		applyTobeControllerWindow.close();
         return true;
     });
 	
     let user = store.get('user');
-    let socket = io('http://localhost:3000', {
+	let turl='http://localhost:3000'
+	//let turl='http://192.168.2.84:3000'
+    let socket = io(turl, {
         query: {
             userName: user.name,
             roomName: '000000'
@@ -315,7 +322,7 @@ function createSocketClient() {
         if (user.name != userName) {
             //记录控制端
             ctlUn = userName
-			popupWindow.webContents.send('refresh-controlled',userName);
+			mainWindow.webContents.send('refresh-controlled',userName);
         }
         console.log(`registerAsControlled ctlUn=${ctlUn} `);
     });
@@ -323,7 +330,7 @@ function createSocketClient() {
         console.log(`on registerAsControlled  ${uname} `);
         if (uname === ctlUn) {
             ctlUn = ''
-			popupWindow.webContents.send('refresh-controlled','');
+			mainWindow.webContents.send('refresh-controlled','');
         }
         console.log(`unRegisterControlled ctlUn=${ctlUn} `);
 
@@ -333,7 +340,8 @@ function createSocketClient() {
 		targetApplyCtler = targetUserName
     });
     socket.on('agreeTobeController', (targetUserName) => {
-		createControllPopup(targetUserName)
+		//createControllPopup(targetUserName)
+		mainWindow.loadFile(path.join(__dirname, './ctlpanel.html'));
     });
     socket.on('rejectController', (targetUserName) => {
     });
