@@ -45,7 +45,9 @@
 <script>
 
 function sendCmd(cmd){
-	window.electronAPI.sendCtlCmd(JSON.stringify(cmd))
+	let scmd=JSON.stringify(cmd)
+	//console.log(scmd)
+	window.electronAPI.sendCtlCmd(scmd)
 }
 
 function move(x,y){

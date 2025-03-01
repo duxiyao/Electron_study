@@ -160,6 +160,7 @@ function createMenu() {
                     label: '设置',
                     click: () => {
                         //createPopup()
+						mainWindow.webContents.openDevTools();
                     }
                 }, {
                     type: 'separator'
@@ -346,14 +347,16 @@ function createSocketClient() {
     socket.on('rejectController', (targetUserName) => {
     });
 	
-    ipcMain.handle('send-ctl-cmd', async(cmd) => {		
+    ipcMain.handle('send-ctl-cmd', async(event, cmd) => {		
 		// 发送指令到服务端
+        console.log(`on send-ctl-cmd  ${JSON.stringify(cmd)} `);
 		socket.emit('execcmd', `${ctlUn},${cmd}`);
         return true;
     });
 
     // 监听指令并加入队列
     socket.on('execcmd', (command) => {
+        console.log(`on execcmd  ${command} `);
         commandQueue.push(JSON.parse(command));
         if (!isProcessing)
             processQueue();
