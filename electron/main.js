@@ -12,7 +12,8 @@ const {
     mouse,
     keyboard,
     Point,
-	Button 
+	Button,
+	Key	
 } = require('@nut-tree/nut-js');
 let store;
 
@@ -23,7 +24,7 @@ async function initializeStore() {
 
 initializeStore().then(() => {
     // 现在您可以使用 store 了
-    console.log(store.get('user'));
+    //console.log(store.get('user'));
     store.clear()
     createWindow()
 });
@@ -40,6 +41,10 @@ function createWindow() {
             nodeIntegration: true, // 允许在渲染进程中使用 Node.js
             contextIsolation: true, // 禁用上下文隔离
             enableRemoteModule: false,
+			webPreferences: {
+				userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', // 自定义 UA
+			},
+			
         },
     });
 
@@ -55,7 +60,7 @@ function createWindow() {
 
     //mainWindow.loadURL('http://localhost:8080'); // Vue 开发服务器地址
 
-    console.log(path.join(__dirname, '../dist/index.html'));
+    //console.log(path.join(__dirname, '../dist/index.html'));
     mainWindow.loadFile(path.join(__dirname, '../dist/index.html')); // 加载打包后的文件
     //mainWindow.webContents.openDevTools(); // 打开开发者工具
     //mainWindow.loadURL('https://pmgx.jiujinbangong.com/');
@@ -414,10 +419,58 @@ async function executeCommand(cmd) {
             console.log('dbclick');
             break;
         case 'pressKey':
-            await keyboard.pressKey(cmd.k);
+			switch(cmd.k){
+				case 'Control':
+					keyboard.pressKey(Key.LeftControl);
+				break;
+				case 'Shift':
+					keyboard.pressKey(Key.LeftShift);
+				break;
+				case 'Alt':
+					keyboard.pressKey(Key.LeftAlt);
+				break;
+				case 'Meta':
+					keyboard.pressKey(Key.LeftWin);
+				break;
+				case 'CapsLock':
+					keyboard.pressKey(Key.CapsLock);
+				break;
+				case 'Tab':
+					keyboard.pressKey(Key.Tab);
+				break;
+				case 'Escape':
+					keyboard.pressKey(Key.Escape);
+				break;
+				default:
+					await keyboard.pressKey(cmd.k);
+			}
             break;
         case 'releaseKey':
-            await keyboard.releaseKey(cmd.k);
+			switch(cmd.k){
+				case 'Control':
+					keyboard.releaseKey(Key.LeftControl);
+				break;
+				case 'Shift':
+					keyboard.releaseKey(Key.LeftShift);
+				break;
+				case 'Alt':
+					keyboard.releaseKey(Key.LeftAlt);
+				break;
+				case 'Meta':
+					keyboard.releaseKey(Key.LeftWin);
+				break;
+				case 'CapsLock':
+					keyboard.releaseKey(Key.CapsLock);
+				break;
+				case 'Tab':
+					keyboard.releaseKey(Key.Tab);
+				break;
+				case 'Escape':
+					keyboard.releaseKey(Key.Escape);
+				break;
+				default:
+					await keyboard.releaseKey(cmd.k);
+			}
             break;
         default:
             console.log('none cmd:', cmd.type);

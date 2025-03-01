@@ -33,9 +33,10 @@ const newName = ref('');
 const isControlled = ref(false);
 const ctledName = ref('');
 
-window.electronAPI.onRefreshControlled((event, data) => {
-	ctledName.value=data
-});
+
+import Bowser from 'bowser';
+
+
 
 // 获取用户数据
 onMounted(async () => {
@@ -47,7 +48,21 @@ onMounted(async () => {
 	} catch (e) {
 		console.log(e)
 	}
+	const ua = navigator.userAgent; // 获取当前浏览器的 UA
+	const result = Bowser.parse(ua);
+
+	console.log('---------------')
+	console.log(result)
+	console.log(Bowser.getParser(window.navigator.userAgent).satisfies({
+            chrome: '>=72',
+            edge: '>=72'
+        }))
+
+	window.electronAPI.onRefreshControlled((event, data) => {
+		ctledName.value=data
+	});
 });
+
 
 const handleChange = async (event) => {
       isControlled.value = event.target.checked;
