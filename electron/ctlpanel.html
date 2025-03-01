@@ -47,8 +47,9 @@ const frameInterval = 1000 / 30; // 每帧的时间间隔（约 33.33ms）
 let lastSendTime = 0;
 
 function sendCmd(cmd){	
-		let scmd=JSON.stringify(cmd)
-		//console.log(scmd)
+	let scmd=JSON.stringify(cmd)
+	console.log(scmd)
+	if(window.electronAPI)
 		window.electronAPI.sendCtlCmd(scmd)
 }
 
@@ -61,6 +62,12 @@ function move(x,y){
 }
 function click(x,y){
 	sendCmd({type:'click',x:x,y:y})
+}
+function pressButton(x,y){
+	sendCmd({type:'pressButton',x:x,y:y})
+}
+function releaseButton(x,y){
+	sendCmd({type:'releaseButton',x:x,y:y})
 }
 function dbclick(x,y){
 	sendCmd({type:'dbclick',x:x,y:y})
@@ -122,6 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (isDragging || timeDiff > 200) { // 拖拽判定条件
 				console.log('拖拽操作');
 			} else {
+			/*
 				clickCount++;
 				setTimeout(() => {
 					if (clickCount === 1) {
@@ -133,6 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
 					}
 					clickCount = 0;
 				}, 250); // 双击时间间隔阈值
+				*/
+				click(event.clientX,event.clientY)
 			}
 
 			// 重置状态
@@ -177,6 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.addEventListener('contextmenu', function(event) {
 		event.preventDefault(); // 阻止默认上下文菜单
 		console.log('右键点击事件触发！', event);
+		rightClickMouse(event.clientX,event.clientY)
 	});
 	
 	document.addEventListener('keydown', function(event) {

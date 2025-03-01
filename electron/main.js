@@ -386,7 +386,22 @@ async function executeCommand(cmd) {
         case 'click':
             await mouse.setPosition(new Point(cmd.x, cmd.y));
             await mouse.leftClick();
-            console.log('click');
+            console.log('leftClick');
+            break;
+        case 'pressButton':
+            await mouse.setPosition(new Point(cmd.x, cmd.y));
+            await mouse.pressButton();
+            console.log('pressButton');
+            break;
+        case 'releaseButton':
+            await mouse.setPosition(new Point(cmd.x, cmd.y));
+            await mouse.releaseButton();
+            console.log('releaseButton');
+            break;
+        case 'rightClickMouse':
+            await mouse.setPosition(new Point(cmd.x, cmd.y));
+            await mouse.rightClick();
+            console.log('rightClick');
             break;
         case 'dbclick':
             await mouse.setPosition(new Point(cmd.x, cmd.y));
