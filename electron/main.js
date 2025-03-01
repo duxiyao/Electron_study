@@ -441,6 +441,12 @@ async function executeCommand(cmd) {
 				case 'Escape':
 					keyboard.pressKey(Key.Escape);
 				break;
+				case 'c':
+					keyboard.pressKey(Key.C);
+				break;
+				case 'v':
+					keyboard.pressKey(Key.V);
+				break;
 				default:
 					await keyboard.pressKey(cmd.k);
 			}
@@ -467,6 +473,12 @@ async function executeCommand(cmd) {
 				break;
 				case 'Escape':
 					keyboard.releaseKey(Key.Escape);
+				break;
+				case 'c':
+					keyboard.releaseKey(Key.C);
+				break;
+				case 'v':
+					keyboard.releaseKey(Key.V);
 				break;
 				default:
 					await keyboard.releaseKey(cmd.k);
