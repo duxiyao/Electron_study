@@ -55,7 +55,8 @@ onMounted(async () => {
 	console.log(result)
 	console.log(Bowser.getParser(window.navigator.userAgent).satisfies({
             chrome: '>=72',
-            edge: '>=72'
+            edge: '>=72',
+            Electron: '>=34'
         }))
 
 	window.electronAPI.onRefreshControlled((event, data) => {

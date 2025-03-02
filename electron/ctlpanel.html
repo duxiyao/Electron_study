@@ -203,15 +203,45 @@ document.addEventListener('DOMContentLoaded', () => {
 	//document.body.setAttribute('tabindex', '0'); // 使 body 可聚焦
 	//document.body.focus(); // 设置焦点
 	document.addEventListener('keydown', function(event) {
-		//console.log('按键按下：', event.key);
+		if(event.metaKey){
+			console.log('metaKey：', event.key);
+			return
+		}
+		if(event.altKey && event.key === 'Tab'){
+			console.log('metaKey：', event.key);
+			return
+		}
 		 if (!event.repeat) {
 			console.log('按键按下：', event.key);
 			pressKey(event.key)
 		}
+		
+		// 拦截 Ctrl + C  V
+		if (event.ctrlKey && event.key === 'c') {
+			console.log('Ctrl + C 被按下');
+			event.preventDefault(); // 阻止默认复制行为
+		}
+		if (event.ctrlKey && event.key === 'v') {
+			console.log('Ctrl + V 被按下');
+			event.preventDefault(); // 阻止默认复制行为
+		}
+		if (event.ctrlKey && event.key === 's') {
+			console.log('Ctrl + s 被按下');
+			event.preventDefault(); // 阻止默认复制行为
+		}
+		if (event.ctrlKey && event.key === 'a') {
+			console.log('Ctrl + a 被按下');
+			event.preventDefault(); // 阻止默认复制行为
+		}
+		event.preventDefault(); // 阻止默认复制行为
 	});
 	document.addEventListener('keyup', function(event) {
+		if(event.metaKey){
+			return
+		}
 		console.log('按键释放：', event.key);
 		releaseKey(event.key)
+		event.preventDefault();
 	});
 	
 	

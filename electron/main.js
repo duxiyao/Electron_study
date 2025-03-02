@@ -4,7 +4,8 @@ const {
     BrowserWindow,
     ipcMain,
     Menu,
-    MenuItem
+    MenuItem,
+	globalShortcut 
 } = require('electron');
 const io = require('socket.io-client');
 const path = require('path');
@@ -128,6 +129,16 @@ function createWindow() {
    //     createPopup()
 	
     //createApplyTobeControllerPopup('123')
+	  
+	   // 注册 Ctrl + Alt + R
+	  globalShortcut.register('Ctrl+Alt+R', () => {
+		console.log('Ctrl + Alt + R ');
+	  });
+
+	  // 注册 Win + D
+	  globalShortcut.register('Super+D', () => {
+		console.log('Win + D ');
+	  });
 }
 
 let popupWindow;
@@ -253,6 +264,9 @@ app.on('activate', () => {
     if (mainWindow === null) {
         initializeStore();
     }
+});
+app.on('will-quit', () => {
+  globalShortcut.unregisterAll();
 });
 
 /////////////applyTobeController
@@ -414,16 +428,16 @@ const keyMap = new Map([
   ['z', Key.Z], ['Z', Key.Z],
 
   // 数字 0-9 及符号
-  ['0', Key._0], [')', Key._0],        // Shift+0
-  ['1', Key._1], ['!', Key._1],
-  ['2', Key._2], ['@', Key._2],
-  ['3', Key._3], ['#', Key._3],
-  ['4', Key._4], ['$', Key._4],
-  ['5', Key._5], ['%', Key._5],
-  ['6', Key._6], ['^', Key._6],
-  ['7', Key._7], ['&', Key._7],
-  ['8', Key._8], ['*', Key._8],
-  ['9', Key._9], ['(', Key._9],
+  ['0', Key.Num0], [')', Key.Num0],        // Shift+0
+  ['1', Key.Num1], ['!', Key.Num1],
+  ['2', Key.Num2], ['@', Key.Num2],
+  ['3', Key.Num3], ['#', Key.Num3],
+  ['4', Key.Num4], ['$', Key.Num4],
+  ['5', Key.Num5], ['%', Key.Num5],
+  ['6', Key.Num6], ['^', Key.Num6],
+  ['7', Key.Num7], ['&', Key.Num7],
+  ['8', Key.Num8], ['*', Key.Num8],
+  ['9', Key.Num9], ['(', Key.Num9],
 
   // 功能键
   ['F1', Key.F1], ['F2', Key.F2],
