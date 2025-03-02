@@ -49,7 +49,7 @@ let lastSendTime = 0;
 
 function sendCmd(cmd){	
 	let scmd=JSON.stringify(cmd)
-	console.log(scmd)
+	//console.log(scmd)
 	if(window.electronAPI)
 		window.electronAPI.sendCtlCmd(scmd)
 }
@@ -200,6 +200,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		rightClickMouse(event.clientX,event.clientY)
 	});
 	
+	//document.body.setAttribute('tabindex', '0'); // 使 body 可聚焦
+	//document.body.focus(); // 设置焦点
 	document.addEventListener('keydown', function(event) {
 		//console.log('按键按下：', event.key);
 		 if (!event.repeat) {
@@ -211,6 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		console.log('按键释放：', event.key);
 		releaseKey(event.key)
 	});
+	
 	
 	/*
 	document.addEventListener('keydown', function(event) {

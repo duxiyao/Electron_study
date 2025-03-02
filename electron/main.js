@@ -128,7 +128,6 @@ function createWindow() {
    //     createPopup()
 	
     //createApplyTobeControllerPopup('123')
-
 }
 
 let popupWindow;
@@ -385,6 +384,98 @@ async function processQueue() {
     isProcessing = false;
 }
 
+const keyMap = new Map([
+  // 字母 A-Z（大小写）
+  ['a', Key.A], ['A', Key.A],
+  ['b', Key.B], ['B', Key.B],
+  ['c', Key.C], ['C', Key.C],
+  ['d', Key.D], ['D', Key.D],
+  ['e', Key.E], ['E', Key.E],
+  ['f', Key.F], ['F', Key.F],
+  ['g', Key.G], ['G', Key.G],
+  ['h', Key.H], ['H', Key.H],
+  ['i', Key.I], ['I', Key.I],
+  ['j', Key.J], ['J', Key.J],
+  ['k', Key.K], ['K', Key.K],
+  ['l', Key.L], ['L', Key.L],
+  ['m', Key.M], ['M', Key.M],
+  ['n', Key.N], ['N', Key.N],
+  ['o', Key.O], ['O', Key.O],
+  ['p', Key.P], ['P', Key.P],
+  ['q', Key.Q], ['Q', Key.Q],
+  ['r', Key.R], ['R', Key.R],
+  ['s', Key.S], ['S', Key.S],
+  ['t', Key.T], ['T', Key.T],
+  ['u', Key.U], ['U', Key.U],
+  ['v', Key.V], ['V', Key.V],
+  ['w', Key.W], ['W', Key.W],
+  ['x', Key.X], ['X', Key.X],
+  ['y', Key.Y], ['Y', Key.Y],
+  ['z', Key.Z], ['Z', Key.Z],
+
+  // 数字 0-9 及符号
+  ['0', Key._0], [')', Key._0],        // Shift+0
+  ['1', Key._1], ['!', Key._1],
+  ['2', Key._2], ['@', Key._2],
+  ['3', Key._3], ['#', Key._3],
+  ['4', Key._4], ['$', Key._4],
+  ['5', Key._5], ['%', Key._5],
+  ['6', Key._6], ['^', Key._6],
+  ['7', Key._7], ['&', Key._7],
+  ['8', Key._8], ['*', Key._8],
+  ['9', Key._9], ['(', Key._9],
+
+  // 功能键
+  ['F1', Key.F1], ['F2', Key.F2],
+  ['F3', Key.F3], ['F4', Key.F4],
+  ['F5', Key.F5], ['F6', Key.F6],
+  ['F7', Key.F7], ['F8', Key.F8],
+  ['F9', Key.F9], ['F10', Key.F10],
+  ['F11', Key.F11], ['F12', Key.F12],
+
+  // 方向键
+  ['ArrowUp', Key.Up], ['Up', Key.Up],
+  ['ArrowDown', Key.Down], ['Down', Key.Down],
+  ['ArrowLeft', Key.Left], ['Left', Key.Left],
+  ['ArrowRight', Key.Right], ['Right', Key.Right],
+
+  // 常用操作键
+  ['Enter', Key.Enter], ['\n', Key.Enter],    // 回车
+  ['Space', Key.Space], [' ', Key.Space],     // 空格
+  ['Tab', Key.Tab], ['\t', Key.Tab],          // Tab
+  ['Backspace', Key.Backspace], 
+  ['Delete', Key.Delete], ['Del', Key.Delete],
+  ['Escape', Key.Escape], ['Esc', Key.Escape],
+
+  // 控制键（左右区分）
+  ['Control', Key.LeftControl], ['Ctrl', Key.LeftControl],
+  ['LeftControl', Key.LeftControl], 
+  ['RightControl', Key.RightControl],
+  ['Shift', Key.LeftShift], 
+  ['LeftShift', Key.LeftShift],
+  ['RightShift', Key.RightShift],
+  ['Alt', Key.LeftAlt], 
+  ['LeftAlt', Key.LeftAlt],
+  ['RightAlt', Key.RightAlt],
+  ['Meta', Key.LeftSuper], ['Super', Key.LeftSuper], // Windows/Mac键
+  ['LeftSuper', Key.LeftSuper],
+  ['RightSuper', Key.RightSuper],
+
+  // 符号键
+  ['`', Key.Backquote], ['~', Key.Backquote],  // Shift+`
+  ['-', Key.Minus], ['_', Key.Minus],          // Shift+-
+  ['=', Key.Equal], ['+', Key.Equal],
+  ['[', Key.LeftBracket], ['{', Key.LeftBracket],
+  [']', Key.RightBracket], ['}', Key.RightBracket],
+  ['\\', Key.Backslash], ['|', Key.Backslash],
+  [';', Key.Semicolon], [':', Key.Semicolon],
+  ["'", Key.Quote], ['"', Key.Quote],
+  [',', Key.Comma], ['<', Key.Comma],
+  ['.', Key.Period], ['>', Key.Period],
+  ['/', Key.Slash], ['?', Key.Slash]
+]);
+
+const keyPressed=[]
 // 执行具体操作
 async function executeCommand(cmd) {
     try {
@@ -419,70 +510,19 @@ async function executeCommand(cmd) {
             console.log('dbclick');
             break;
         case 'pressKey':
-			switch(cmd.k){
-				case 'Control':
-					keyboard.pressKey(Key.LeftControl);
-				break;
-				case 'Shift':
-					keyboard.pressKey(Key.LeftShift);
-				break;
-				case 'Alt':
-					keyboard.pressKey(Key.LeftAlt);
-				break;
-				case 'Meta':
-					keyboard.pressKey(Key.LeftWin);
-				break;
-				case 'CapsLock':
-					keyboard.pressKey(Key.CapsLock);
-				break;
-				case 'Tab':
-					keyboard.pressKey(Key.Tab);
-				break;
-				case 'Escape':
-					keyboard.pressKey(Key.Escape);
-				break;
-				case 'c':
-					keyboard.pressKey(Key.C);
-				break;
-				case 'v':
-					keyboard.pressKey(Key.V);
-				break;
-				default:
-					await keyboard.pressKey(cmd.k);
-			}
+			keyPressed.push(cmd.k)
+			keyboard.pressKey(keyMap.get(cmd.k));
             break;
         case 'releaseKey':
-			switch(cmd.k){
-				case 'Control':
-					keyboard.releaseKey(Key.LeftControl);
-				break;
-				case 'Shift':
-					keyboard.releaseKey(Key.LeftShift);
-				break;
-				case 'Alt':
-					keyboard.releaseKey(Key.LeftAlt);
-				break;
-				case 'Meta':
-					keyboard.releaseKey(Key.LeftWin);
-				break;
-				case 'CapsLock':
-					keyboard.releaseKey(Key.CapsLock);
-				break;
-				case 'Tab':
-					keyboard.releaseKey(Key.Tab);
-				break;
-				case 'Escape':
-					keyboard.releaseKey(Key.Escape);
-				break;
-				case 'c':
-					keyboard.releaseKey(Key.C);
-				break;
-				case 'v':
-					keyboard.releaseKey(Key.V);
-				break;
-				default:
-					await keyboard.releaseKey(cmd.k);
+			let targetKey=keyMap.get(cmd.k)
+			
+			let pressedIndex=keyPressed.indexOf(cmd.k)
+			if(pressedIndex!==-1){
+				keyPressed.splice(pressedIndex,1)
+			}else{				
+				keyboard.pressKey(targetKey);
 			}
+			keyboard.releaseKey(targetKey);
             break;
         default:
             console.log('none cmd:', cmd.type);
