@@ -5,7 +5,8 @@ const {
     ipcMain,
     Menu,
     MenuItem,
-	globalShortcut 
+	globalShortcut ,
+	screen
 } = require('electron');
 const io = require('socket.io-client');
 const path = require('path');
@@ -33,10 +34,11 @@ initializeStore().then(() => {
 let mainWindow;
 
 function createWindow() {
+	const { width, height } = screen.getPrimaryDisplay().workAreaSize;
     // 创建浏览器窗口
     mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: width,
+        height: height,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true, // 允许在渲染进程中使用 Node.js
@@ -486,7 +488,11 @@ const keyMap = new Map([
   ["'", Key.Quote], ['"', Key.Quote],
   [',', Key.Comma], ['<', Key.Comma],
   ['.', Key.Period], ['>', Key.Period],
-  ['/', Key.Slash], ['?', Key.Slash]
+  ['/', Key.Slash], ['?', Key.Slash],
+  
+  ['Home', Key.Home], ['End', Key.End],
+  ['PageUp', Key.PageUp], ['PageDown', Key.PageDown],
+  ['Insert', Key.Insert], ['Pause', Key.Pause],
 ]);
 
 const keyPressed=[]
