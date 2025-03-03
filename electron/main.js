@@ -6,9 +6,12 @@ const {
     Menu,
     MenuItem,
 	globalShortcut ,
+	desktopCapturer  ,
+	nativeImage   ,
 	screen
 } = require('electron');
 const io = require('socket.io-client');
+const fs = require('fs');
 const path = require('path');
 const {
     mouse,
@@ -184,7 +187,9 @@ function createMenu() {
                     label: '设置',
                     click: () => {
                         //createPopup()
-						mainWindow.webContents.openDevTools();
+						//mainWindow.webContents.openDevTools();
+						captureAndSaveScreenshot();
+
                     }
                 }, {
                     type: 'separator'
@@ -246,6 +251,32 @@ function rightClickMenu() {
     });
 
 }
+
+async function captureAndSaveScreenshot() {
+    try {
+        // 获取所有屏幕的截图
+        const sources = await desktopCapturer.getSources({
+            types: ['screen'],
+            thumbnailSize: { width: 1920, height: 1080 }, // 设置截图的分辨率
+        });
+
+        // 遍历每个屏幕的截图
+        sources.forEach((source, index) => {
+            // 将截图转换为 PNG 格式
+            const image = nativeImage.createFromBuffer(source.thumbnail.toPNG());
+
+            // 设置保存路径
+            const filePath = path.join(__dirname, `screenshot_${index + 1}.png`);
+
+            // 保存截图到文件
+            fs.writeFileSync(filePath, image.toPNG());
+            console.log(`Screenshot saved to: ${filePath}`);
+        });
+    } catch (error) {
+        console.error('Failed to capture screenshot:', error);
+    }
+}
+
 
 console.log('Electron version:', process.versions.electron);
 console.log('Chromium version:', process.versions.chrome);
