@@ -7,7 +7,7 @@ const io = require('socket.io')(http);
 const rooms = new Map();
 // 用户管理：{ userName: Set<socketId> }
 const users = new Map();
-// 房间被控端管理：{ userName: socketId }
+// 房间被控端管理：{ roomName: userName }
 const roomsCtl = new Map();
 
 io.on('connection', (socket) => {
@@ -16,32 +16,42 @@ io.on('connection', (socket) => {
     if (!rooms.has(roomName)) {
         rooms.set(roomName, new Set());
     }
+    if (roomsCtl.has(roomName)&&roomsCtl.get(roomName)) {
+        socket.emit('registerAsControlled', roomsCtl.get(roomName));
+    }
     rooms.get(roomName).add(socket.id);
-    console.log(`[被控端] ${socket.id} 加入房间 ${roomName}`);
+    console.log(`${socket.id} 加入房间 ${roomName}`);
     const userName = socket.handshake.query.userName;
     users.set(userName, socket);
     console.log(`${userName} 加入房间 ${roomName}`);
 
     // 被控端加入房间（房间名唯一）
     socket.on('registerAsControlled', () => {
-        //roomsCtl
-        console.log(`${userName} registerAsControlled ${roomName}  `);
+		roomsCtl.set(roomName,userName)
+        console.log(`[被控端] ${userName} registerAsControlled ${roomName}  `);
         io.to(roomName).emit('registerAsControlled', userName); // 广播给所有人被控端userName
 
     });
 
     socket.on('applyTobeController', (targetUserName) => {
-        users.get(targetUserName).emit('applyTobeController', userName);
+		if(users.has(targetUserName))
+			users.get(targetUserName).emit('applyTobeController', userName);
     });
     socket.on('agreeTobeController', (targetUserName) => {
-        users.get(targetUserName).emit('agreeTobeController', userName);
+		if(users.has(targetUserName))
+			users.get(targetUserName).emit('agreeTobeController', userName);
     });
     socket.on('rejectController', (targetUserName) => {
-        users.get(targetUserName).emit('rejectController', userName);
+		if(users.has(targetUserName))
+			users.get(targetUserName).emit('rejectController', userName);
     });
     socket.on('execcmd', (p) => {
-		var ps=p.split(',')
-        users.get(ps[0]).emit('execcmd', ps[1]);
+		//console.log(`cmd->${p}  `);
+		var i=p.indexOf(',')
+		var u=p.substring(0,i);
+		var c=p.substring(i+1);
+		if(users.has(u))
+			users.get(u).emit('execcmd', c);
     });
 
     // 清理断开连接的客户端
@@ -52,6 +62,11 @@ io.on('connection', (socket) => {
                 console.log(`客户端 ${socket.id} 离开房间 ${roomName}`);
             }
         });
+		
+		if(roomsCtl.get(roomName)===userName){
+			roomsCtl.delete(roomName)
+            console.log(`[被控端] ${userName} 离开房间 ${roomName}`);			
+		}
     });
 	
     // 控制端发送指令到目标房间
